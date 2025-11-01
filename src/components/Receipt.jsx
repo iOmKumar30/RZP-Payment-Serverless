@@ -1,8 +1,8 @@
-import React from "react";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
-import headerImage from "../assets/relearn_header.png";
+import React from "react";
 import { ToWords } from "to-words";
+import headerImage from "../assets/relearn_header.png";
 const Receipt = React.forwardRef(({ paymentDetails }, ref) => {
   const downloadImage = () => {
     const receiptElement = document.getElementById("receipt");
@@ -30,8 +30,7 @@ const Receipt = React.forwardRef(({ paymentDetails }, ref) => {
           pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
           pdf.save("RELF-donation-receipt.pdf");
         })
-        .catch((error) => {
-        });
+        .catch((error) => {});
     }, 500);
   };
 
@@ -152,8 +151,16 @@ const Receipt = React.forwardRef(({ paymentDetails }, ref) => {
 
           <div className="mb-4 text-sm">
             <p>
-              <strong>Donation Amount:</strong> ₹
-              {parseFloat(paymentDetails.amount).toFixed(2)}
+              {" "}
+              <strong>Donation Amount:</strong>{" "}
+              {paymentDetails?.amount != null
+                ? Number(paymentDetails.amount).toLocaleString("en-IN", {
+                    style: "currency",
+                    currency: "INR",
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
+                : "—"}{" "}
             </p>
             <p>
               <strong>In words:</strong>{" "}

@@ -1,17 +1,21 @@
-import React from "react";
-import PaymentForm from "./components/PaymentForm";
-import ReceiptPage from "./pages/ReceiptPage";
+// src/App.jsx
+
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+
 import PanPrompt from "./components/PanPrompt";
-import DonationDashboard from "./pages/DonationDashboard";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AdminLogin from "./pages/AdminLogin";
+import PaymentForm from "./components/PaymentForm";
 import ProtectedRoute from "./components/ProtectedRoute";
+import DonationDashboard from "./pages/DonationDashboard";
+import ReceiptPage from "./pages/ReceiptPage";
+import SsoOk from "./pages/SsoOk"; // NEW: auto-login after server-side SSO verification
+
 import "./App.css";
 
 const App = () => {
   return (
     <Router>
       <Routes>
+        {/* Public donation form */}
         <Route
           path="/"
           element={
@@ -20,6 +24,8 @@ const App = () => {
             </div>
           }
         />
+
+        {/* Receipt */}
         <Route
           path="/receipt"
           element={
@@ -28,6 +34,8 @@ const App = () => {
             </div>
           }
         />
+
+        {/* PAN capture */}
         <Route
           path="/pancard"
           element={
@@ -36,15 +44,18 @@ const App = () => {
             </div>
           }
         />
+
+        {/* SSO success page: sets localStorage and redirects to dashboard */}
         <Route
-          path="/admin/login"
+          path="/admin/sso-ok"
           element={
             <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-              <AdminLogin />
+              <SsoOk />
             </div>
           }
         />
 
+        {/* Admin donations dashboard (protected) */}
         <Route
           path="/admin/donations"
           element={
@@ -54,6 +65,7 @@ const App = () => {
           }
         />
 
+        {/* 404 */}
         <Route
           path="*"
           element={
