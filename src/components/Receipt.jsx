@@ -114,7 +114,6 @@ const Receipt = () => {
           </div>
 
           <hr className="my-2 border-t-2 border-black" />
-          <hr className="mb-4 border-t-2 border-black" />
 
           <div className="flex justify-between items-center text-sm font-bold text-gray-900 mb-6">
             <p>Receipt No: {data.receiptNumber}</p>
