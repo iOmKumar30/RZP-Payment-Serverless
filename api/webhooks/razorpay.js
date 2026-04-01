@@ -61,6 +61,8 @@ export default async function handler(req, res) {
             contact: notes.contact,
             address: notes.address,
             reason: notes.reason,
+            method: paymentMethod || "unknown", 
+            date: paymentDate,
             receiptNumber: receiptNumber,
           },
         });
