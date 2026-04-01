@@ -1,8 +1,8 @@
-// ReceiptPage.jsx
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Receipt from "../components/Receipt";
-import { useEffect } from "react";
 import useBackButtonWarning from "../hooks/useBackButtonWarning";
+
 const ReceiptPage = () => {
   useBackButtonWarning(true);
   const { state } = useLocation();
@@ -14,12 +14,23 @@ const ReceiptPage = () => {
     }
   }, [state, navigate]);
 
+  if (!state) return null;
+
   return (
-    <div className="max-w-2xl mx-auto mt-4">
-      <h2 className="text-2xl font-bold -mb-11 text-center">
-        🧾 Donation Receipt
-      </h2>
-      {state && <Receipt paymentDetails={state} />}
+    <div className="min-h-screen bg-slate-200 pb-20">
+      <div className="pt-10 pb-6">
+        <h2 className="text-3xl font-extrabold text-slate-800 text-center flex items-center justify-center gap-3">
+          <span className="text-4xl">🧾</span> Donation Receipt
+        </h2>
+        <p className="text-center text-slate-500 mt-2">
+          Your receipt has been generated successfully.
+        </p>
+      </div>
+
+      {/* Container that is wide enough to hold the A4 Receipt */}
+      <div className="flex justify-center px-4">
+        <Receipt paymentDetails={state} />
+      </div>
     </div>
   );
 };

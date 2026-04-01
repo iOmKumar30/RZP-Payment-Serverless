@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ToWords } from "to-words";
 import headerImage from "../assets/relearn_header.png";
+import signatureImage from "../assets/sign_left.png";
 
 const toWords = new ToWords({
   localeCode: "en-IN",
@@ -53,7 +54,7 @@ const Receipt = () => {
       });
 
       const imgData = canvas.toDataURL("image/png");
-      const pdfWidth = 595.28; 
+      const pdfWidth = 595.28; // A4 Width in pts
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
       const pdf = new jsPDF({
@@ -76,7 +77,7 @@ const Receipt = () => {
     <div className="bg-gray-200 min-h-screen py-10">
       <div
         id="donation-receipt-root"
-        className="bg-white text-gray-800 font-sans leading-relaxed mx-auto border border-gray-300 shadow-sm flex flex-col justify-between relative"
+        className="bg-white text-gray-800 font-sans leading-relaxed mx-auto border border-gray-300 shadow-sm flex flex-col justify-between relative animate-slideUp"
         style={{
           width: "210mm",
           minHeight: "297mm",
@@ -140,7 +141,7 @@ const Receipt = () => {
               ["Donor Name", data.name],
               ["Address", data.address],
               ["PAN No", data.pan],
-              ["GST No", data.gstno], // Displaying the GST No
+              ["GST No", data.gstno],
               ["Mobile No", data.contact],
               ["Email", data.email],
             ].map(
@@ -172,22 +173,30 @@ const Receipt = () => {
             </div>
             <div className="grid grid-cols-[180px_1fr]">
               <span className="font-bold text-gray-600">Transaction ID:</span>
-              <span className="font-mono">{data.transactionId}</span>
+              <span className="font-mono text-xs">{data.transactionId}</span>
             </div>
           </div>
 
           <div className="mt-auto mb-4">
             <div className="mb-6">
-              <p className="font-bold">Authorized Signatory</p>
-              <div className="h-12"></div> {/* Space for signature */}
+              <p className="font-bold mb-1">Authorized Signatory</p>
+
+              <div className="h-16 flex items-center justify-start mt-1 mb-1">
+                <img
+                  src={signatureImage}
+                  alt="Signature"
+                  className="max-h-14 w-auto object-contain" 
+                />
+              </div>
+
               <p className="font-semibold">Dr Mita Tarafder</p>
               <p className="text-xs text-gray-600">Mobile: +91-9852193175</p>
             </div>
-            <hr className="border-t border-gray-300 mb-2" />
+            <hr className="border-t border-gray-400 mb-2" />
             <p className="text-[10px] italic text-gray-500 text-center leading-tight">
-              Donations made to Relearn Foundation are eligible for tax
-              deduction under Section 80G. This is a computer-generated receipt
-              and does not require a physical signature.
+              Donations made to Relearn Foundation (PAN-AACTR5805Q) are eligible
+              for tax deduction under Section 80G. This is a computer-generated
+              receipt and does not require a physical signature.
             </p>
           </div>
         </div>
@@ -195,8 +204,8 @@ const Receipt = () => {
         <div className="w-full py-6 text-center text-[10px] text-gray-500 bg-white shrink-0">
           <div className="flex items-center justify-center mb-1 gap-2 px-12">
             <div className="h-px bg-gray-200 grow"></div>
-            <span className="font-semibold">
-              relearn2015@gmail.com | relf.in
+            <span className="font-semibold whitespace-nowrap">
+              relearn2015@gmail.com | +91-9334041104 | relf.in
             </span>
             <div className="h-px bg-gray-200 grow"></div>
           </div>
@@ -206,7 +215,7 @@ const Receipt = () => {
         </div>
       </div>
 
-      <div className="text-center mt-8">
+      <div className="text-center mt-8 mb-16">
         <button
           onClick={handleDownload}
           disabled={isDownloading}
@@ -216,7 +225,9 @@ const Receipt = () => {
               : "bg-green-600 text-white hover:bg-green-700"
           }`}
         >
-          {isDownloading ? "Generating PDF..." : "Download Receipt (PDF)"}
+          {isDownloading
+            ? "Generating Official PDF..."
+            : "Download Official PDF Receipt"}
         </button>
       </div>
     </div>
