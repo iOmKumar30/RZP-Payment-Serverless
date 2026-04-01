@@ -25,17 +25,19 @@ export default async function handler(req, res) {
       .createHmac("sha256", secret)
       .update(rawBody)
       .digest("hex");
-    if (expectedSignature !== signature) {
+    if (expectedSignature !== signature)
       return res.status(400).json({ error: "Invalid signature" });
-    }
 
     const event = JSON.parse(rawBody);
 
     if (event.event === "payment.captured") {
       const payment = event.payload.payment.entity;
+
       const transactionId = payment.id;
       const amountInRupees = payment.amount / 100;
-      const notes = payment.notes;
+      const method = payment.method || "unknown";
+      const paymentDate = new Date(payment.created_at * 1000);
+      const notes = payment.notes || {};
 
       const existing = await prisma.donation.findUnique({
         where: { transactionId },
@@ -56,12 +58,12 @@ export default async function handler(req, res) {
           data: {
             transactionId: transactionId,
             amount: new Prisma.Decimal(amountInRupees),
-            name: notes.name,
-            email: notes.email,
-            contact: notes.contact,
-            address: notes.address,
-            reason: notes.reason,
-            method: paymentMethod || "unknown", 
+            name: notes.name || "N/A",
+            email: notes.email || "N/A",
+            contact: notes.contact || "N/A",
+            address: notes.address || "N/A",
+            reason: notes.reason || "N/A",
+            method: method,
             date: paymentDate,
             receiptNumber: receiptNumber,
           },
