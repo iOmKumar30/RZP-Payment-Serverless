@@ -1,4 +1,3 @@
-// src/App.jsx
 
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
@@ -7,7 +6,7 @@ import PaymentForm from "./components/PaymentForm";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DonationDashboard from "./pages/DonationDashboard";
 import ReceiptPage from "./pages/ReceiptPage";
-import SsoOk from "./pages/SsoOk"; // NEW: auto-login after server-side SSO verification
+import SsoOk from "./pages/SsoOk"; 
 
 import "./App.css";
 

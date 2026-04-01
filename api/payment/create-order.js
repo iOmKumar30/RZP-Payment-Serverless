@@ -10,16 +10,23 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { amount } = req.body;
+  const { amount, name, email, contact, address, reason } = req.body;
 
   if (!amount || isNaN(amount)) {
     return res.status(400).json({ error: "Invalid amount" });
   }
 
   const options = {
-    amount: Math.round(amount * 100), // convert to paise
+    amount: Math.round(amount * 100),
     currency: "INR",
     receipt: `receipt_order_${Date.now()}`,
+    notes: {
+      name: name || "",
+      email: email || "",
+      contact: contact || "",
+      address: address || "",
+      reason: reason || "",
+    },
   };
 
   try {

@@ -19,7 +19,7 @@ export const fetchFilteredDonations = async (
   to,
   skip = 0,
   limit = 10,
-  search = ""
+  search = "",
 ) => {
   try {
     const response = await axios.get(`${API_BASE}`, {
@@ -67,17 +67,22 @@ export const downloadAllExcel = async () => {
   }
 };
 
-export const saveDonation = async (donationData) => {
+
+export const updatePan = async (transactionId, pan) => {
   try {
-    const response = await axios.post(API_BASE, donationData, {
-      headers: {
-        "Content-Type": "application/json",
+    const response = await axios.post(
+      `${API_BASE}/update-pan`,
+      { transactionId, pan },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
     return response.data;
   } catch (error) {
-    toast.error("Error saving donation", { autoClose: 1500 });
-    console.error("Error saving donation:", error);
+    toast.error("Error updating PAN", { autoClose: 1500 });
+    console.error("Error updating PAN:", error);
     throw error;
   }
 };

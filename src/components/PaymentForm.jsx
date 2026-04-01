@@ -1,15 +1,13 @@
-import React, { useState, useRef, use } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import { FaSpinner } from "react-icons/fa";
-import "react-toastify/dist/ReactToastify.css";
-import "./PaymentForm.css"; // Custom CSS for animations
-import { loadRazorpay } from "../utils/loadRazorpay";
 import axios from "axios";
-import Receipt from "./Receipt";
+import { useRef, useState } from "react";
+import { FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import logo from "../assets/relearn_logo-removebg-preview.png";
 import "../styles/PaymentForm.css";
-import useBackButtonWarning from "../hooks/useBackButtonWarning";
+import { loadRazorpay } from "../utils/loadRazorpay";
+import "./PaymentForm.css"; // Custom CSS for animations
 const PaymentForm = () => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -27,7 +25,7 @@ const PaymentForm = () => {
   const otherReasonRef = useRef(null);
   const handlePayment = async () => {
     const res = await loadRazorpay(
-      "https://checkout.razorpay.com/v1/checkout.js"
+      "https://checkout.razorpay.com/v1/checkout.js",
     );
 
     if (!res) {
@@ -35,14 +33,19 @@ const PaymentForm = () => {
       return;
     }
 
-    // Create order from backend
-    // "https://rzp-payment-backend.onrender.com/api/payment/create-order"
     let result;
     try {
       result = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/payment/create-order`,
-        { amount: parseFloat(amount) },
-        { timeout: 60000 }
+        {
+          amount: parseFloat(amount),
+          name,
+          email,
+          contact,
+          address,
+          reason: purpose === "Other" ? otherReason : purpose,
+        },
+        { timeout: 60000 },
       );
     } catch (error) {
       if (error.code === "ECONNABORTED") {
@@ -59,7 +62,7 @@ const PaymentForm = () => {
     const reason = purpose === "Other" ? otherReason : purpose;
 
     const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID, // use VITE_ prefix in .env
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
       amount: orderAmount.toString(),
       currency,
       name: name,

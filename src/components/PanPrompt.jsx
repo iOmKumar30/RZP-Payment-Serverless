@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import { saveDonation } from "../services/donationAPI";
-import useBackButtonWarning from "../hooks/useBackButtonWarning";
+import { updatePan } from "../services/donationAPI";
 const PanPrompt = () => {
   const { state: paymentDetails } = useLocation();
   const navigate = useNavigate();
@@ -27,7 +26,7 @@ const PanPrompt = () => {
     const detailsWithPan = { ...paymentDetails, pan };
     let res;
     try {
-      res = await saveDonation(detailsWithPan);
+      res = await updatePan(paymentDetails.transactionId, pan);
     } catch (err) {
       console.error("Error saving donation:", err);
       toast.error("Error saving donation to database!");
@@ -43,24 +42,9 @@ const PanPrompt = () => {
     });
   };
 
-  const handleSkip = async () => {
-    if (isLoading) return; // prevent multiple submissions
-    setIsLoading(true);
-    let res;
-    try {
-      res = await saveDonation(paymentDetails);
-    } catch (err) {
-      if (err.response?.status === 409) {
-        navigate("/");
-        return;
-      }
-      console.error("Error saving donation:", err);
-      toast.error("Error saving donation to database!");
-      setIsLoading(false);
-      return;
-    }
-    setIsLoading(false);
-    toast.info("You skipped downloading the receipt.");
+  const handleSkip = () => {
+    // If they skip, we do nothing because the webhook already created the donation record without PAN
+    toast.info("You skipped entering your PAN. Thank you for your donation!");
     navigate("/");
   };
 
