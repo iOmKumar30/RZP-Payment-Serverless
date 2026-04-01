@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   if (req.method !== "POST")
     return res.status(405).json({ error: "Method not allowed" });
 
-  const { transactionId, pan } = req.body;
+  const { transactionId, pan, gstno } = req.body;
 
   if (!transactionId || !pan) {
     return res
@@ -15,7 +15,10 @@ export default async function handler(req, res) {
   try {
     const updatedDonation = await prisma.donation.update({
       where: { transactionId: transactionId },
-      data: { pan: pan },
+        data: {
+            pan: pan,
+            gstno: gstno || null,
+       },
     });
 
     res
