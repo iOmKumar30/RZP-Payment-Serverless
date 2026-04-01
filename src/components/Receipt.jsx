@@ -84,11 +84,11 @@ const Receipt = () => {
           padding: "0",
         }}
       >
-        <div className="relative w-full h-[185px] mb-4 shrink-0">
+        <div className="relative w-full mb-4 shrink-0">
           <img
             src={headerImage}
             alt="Header"
-            className="w-full h-full object-cover"
+            className="w-full h-auto block"
           />
         </div>
 
