@@ -45,8 +45,9 @@ const Receipt = () => {
 
     setIsDownloading(true);
     try {
+      // Capture at print-quality resolution (scale: 2 is sharper and more stable than 4)
       const canvas = await html2canvas(element, {
-        scale: 4,
+        scale: 2,
         useCORS: true,
         backgroundColor: "#ffffff",
         scrollY: -window.scrollY,
@@ -54,17 +55,41 @@ const Receipt = () => {
         windowHeight: element.scrollHeight,
       });
 
-      const imgData = canvas.toDataURL("image/png");
-      const pdfWidth = 595.28; // A4 Width in pts
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      // Use JPEG for compact size and crisp text, avoiding massive PNGs
+      const imgData = canvas.toDataURL("image/jpeg", 0.8);
 
+      // Force strictly A4 format in millimeters
       const pdf = new jsPDF({
         orientation: "portrait",
-        unit: "pt",
-        format: [pdfWidth, pdfHeight],
+        unit: "mm",
+        format: "a4",
+        compress: true,
       });
 
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      // Scale proportionally and center on the A4 page
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const imageRatio = canvas.width / canvas.height;
+      const pageRatio = pageWidth / pageHeight;
+
+      const imageWidth =
+        imageRatio > pageRatio ? pageWidth : pageHeight * imageRatio;
+      const imageHeight =
+        imageRatio > pageRatio ? pageWidth / imageRatio : pageHeight;
+      const x = (pageWidth - imageWidth) / 2;
+      const y = (pageHeight - imageHeight) / 2;
+
+      pdf.addImage(
+        imgData,
+        "JPEG",
+        x,
+        y,
+        imageWidth,
+        imageHeight,
+        undefined,
+        "FAST",
+      );
+
       pdf.save(`Donation_${data.receiptNumber || "Receipt"}.pdf`);
     } catch (error) {
       console.error("PDF Generation Error:", error);
@@ -73,7 +98,6 @@ const Receipt = () => {
       setIsDownloading(false);
     }
   };
-
   return (
     <div className="bg-gray-200 min-h-screen py-10">
       <div
