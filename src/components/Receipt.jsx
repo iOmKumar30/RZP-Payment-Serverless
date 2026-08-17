@@ -45,9 +45,9 @@ const Receipt = () => {
 
     setIsDownloading(true);
     try {
-      // Capture at print-quality resolution (scale: 2 is sharper and more stable than 4)
+      // scale: 3 forces a much higher resolution capture for crisp text
       const canvas = await html2canvas(element, {
-        scale: 2,
+        scale: 3,
         useCORS: true,
         backgroundColor: "#ffffff",
         scrollY: -window.scrollY,
@@ -55,10 +55,9 @@ const Receipt = () => {
         windowHeight: element.scrollHeight,
       });
 
-      // Use JPEG for compact size and crisp text, avoiding massive PNGs
-      const imgData = canvas.toDataURL("image/jpeg", 0.8);
+      // 1.0 forces maximum JPEG quality, keeping it sharp but smaller than PNG
+      const imgData = canvas.toDataURL("image/jpeg", 1.0);
 
-      // Force strictly A4 format in millimeters
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
@@ -66,7 +65,6 @@ const Receipt = () => {
         compress: true,
       });
 
-      // Scale proportionally and center on the A4 page
       const pageWidth = 210;
       const pageHeight = 297;
       const imageRatio = canvas.width / canvas.height;
@@ -98,14 +96,15 @@ const Receipt = () => {
       setIsDownloading(false);
     }
   };
+
   return (
     <div className="bg-gray-200 min-h-screen py-10">
       <div
         id="donation-receipt-root"
-        className="bg-white text-gray-800 font-sans leading-relaxed mx-auto flex flex-col justify-between relative animate-slideUp"
+        className="bg-white text-gray-800 font-sans leading-relaxed mx-auto flex flex-col justify-between relative"
         style={{
-          width: "210mm", // Exact A4 width
-          minHeight: "297mm", // At least A4, but never clip receipt content
+          width: "210mm",
+          minHeight: "297mm",
           padding: "0",
           boxSizing: "border-box",
         }}
