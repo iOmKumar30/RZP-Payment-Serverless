@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import { ToWords } from "to-words";
 import headerImage from "../assets/relearn_header.png";
 import signatureImage from "../assets/sign_left.png";
+import stampImage from "../assets/stamp.jpeg"; // <-- NEW ASSET IMPORTED HERE
 
 const toWords = new ToWords({
   localeCode: "en-IN",
@@ -79,137 +80,192 @@ const Receipt = () => {
         id="donation-receipt-root"
         className="bg-white text-gray-800 font-sans leading-relaxed mx-auto border border-gray-300 shadow-sm flex flex-col justify-between relative animate-slideUp"
         style={{
-          width: "210mm",
-          minHeight: "297mm",
+          width: "210mm", // Exact A4 width
+          minHeight: "297mm", // At least A4, but never clip receipt content
           padding: "0",
+          boxSizing: "border-box",
         }}
       >
+        {/* 1. Header (Full Width) */}
         <div className="relative w-full mb-4 shrink-0">
           <img
             src={headerImage}
-            alt="Header"
-            className="w-full h-auto block"
+            alt="Relearn Foundation Header"
+            className="block w-full h-auto"
           />
         </div>
 
+        {/* 2. Main Content */}
         <div className="px-12 flex-1 flex flex-col">
           <div className="text-left text-sm text-black mb-4 leading-snug space-y-1">
-            <h1 className="font-bold text-lg mb-1 uppercase">
-              Relearn Foundation
-            </h1>
+            <h1 className="font-bold text-lg mb-1">Relearn Foundation</h1>
             <p>2681, Vijaya Gardens, Baridih, Jamshedpur, Jharkhand 831017</p>
             <p>
               <span className="font-semibold">PAN:</span> AACTR5805Q
             </p>
             <p>
-              <span className="font-semibold">80G Reg:</span> AACTR5805Q23PT02
-              (22-05-2024)
+              <span className="font-semibold">80G Registration Number:</span>{" "}
+              AACTR5805Q25PT02
+            </p>
+            <p>
+              <span className="font-semibold">12A Registration Number:</span>{" "}
+              AACTR5805Q25PT01
             </p>
             <p>
               <span className="font-semibold">GST No:</span> 20AACTR5805Q2Z9
             </p>
             <p>
               <span className="font-semibold">CSR-1:</span> CSR00012310
+              (MINISTRY OF CORPORATE AFFAIRS)
             </p>
           </div>
 
-          <hr className="my-2 border-t-2 border-black" />
+          <hr className="my-3 border-t-2 border-black" />
 
-          <div className="flex justify-between items-center text-sm font-bold text-gray-900 mb-6">
+          <div className="flex justify-between items-center text-sm font-bold text-gray-900 mb-6 mt-2">
             <p>Receipt No: {data.receiptNumber}</p>
             <p>Date: {formattedDate}</p>
           </div>
 
-          <h2 className="text-2xl font-bold text-center text-gray-900 mb-6 uppercase tracking-widest">
+          <h2 className="text-2xl font-bold text-center text-gray-900 mb-6 uppercase tracking-wide">
             Donation Receipt
           </h2>
 
-          <div className="text-sm text-gray-800 mb-6 space-y-3">
-            <p className="font-bold">Dear {data.name},</p>
+          <div className="text-sm text-gray-800 mb-6">
+            <p className="mb-3 font-bold">Thank you for your donation.</p>
             <p className="text-justify leading-relaxed">
-              The amount you have given will help Relearn Foundation implement
-              missions in Education, Environment, and Empowerment. This receipt
-              serves as an attestation of your generous contribution for tax
-              filing purposes.
+              The amount you have given will make a difference as the proceeds
+              help the Relearn Foundation to implement our mission in the areas
+              of Education, Environment and Empowerment. This receipt is an
+              attestation that we have gratefully received your generous
+              contribution. This receipt maybe kept for tax filling purpose.
             </p>
           </div>
 
-          <div className="text-sm space-y-2 mb-8">
-            {[
-              ["Purpose", data.reason],
-              ["Donor Name", data.name],
-              ["Address", data.address],
-              ["PAN No", data.pan],
-              ["GST No", data.gstno],
-              ["Mobile No", data.contact],
-              ["Email", data.email],
-            ].map(
-              ([label, value]) =>
-                value && (
-                  <div key={label} className="grid grid-cols-[140px_1fr]">
-                    <span className="font-bold">{label}:</span>
-                    <span>{value}</span>
-                  </div>
-                ),
+          <div className="text-sm space-y-2 mb-6">
+            <div className="grid grid-cols-[140px_1fr]">
+              <span className="font-bold">Purpose:</span>
+              <span>{data.reason}</span>
+            </div>
+            <div className="grid grid-cols-[140px_1fr]">
+              <span className="font-bold">Remarks:</span>
+              <span>{data.remarks}</span>
+            </div>
+            <div className="grid grid-cols-[140px_1fr]">
+              <span className="font-bold">Donor Name:</span>
+              <span>{data.name}</span>
+            </div>
+            <div className="grid grid-cols-[140px_1fr]">
+              <span className="font-bold">Address:</span>
+              <span>{data.address}</span>
+            </div>
+            {data.pan && (
+              <div className="grid grid-cols-[140px_1fr]">
+                <span className="font-bold">PAN No:</span>
+                <span>{data.pan}</span>
+              </div>
             )}
+            {data.gstno && data.gstno !== "N/A" && (
+              <div className="grid grid-cols-[140px_1fr]">
+                <span className="font-bold">GST No:</span>
+                <span>{data.gstno}</span>
+              </div>
+            )}
+            <div className="grid grid-cols-[140px_1fr]">
+              <span className="font-bold">Mobile No:</span>
+              <span>{data.contact}</span>
+            </div>
+            <div className="grid grid-cols-[140px_1fr]">
+              <span className="font-bold">Email:</span>
+              <span>{data.email}</span>
+            </div>
           </div>
 
-          <div className="text-sm space-y-2 mb-8 bg-gray-50 p-6 rounded border border-gray-200">
-            <div className="grid grid-cols-[180px_1fr] items-center">
-              <span className="font-bold text-gray-600">Donation Amount:</span>
-              <span className="font-bold text-xl text-green-700">
-                ₹
-                {Number(data.amount).toLocaleString("en-IN", {
-                  minimumFractionDigits: 2,
-                })}
+          <div className="text-sm space-y-2 mb-8 bg-gray-50 p-4 rounded border border-gray-200">
+            <div className="grid grid-cols-[160px_1fr]">
+              <span className="font-bold">Donation Amount:</span>
+              <span className="font-bold text-lg">
+                {data.amount != null
+                  ? Number(data.amount).toLocaleString("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                  : "—"}
               </span>
             </div>
-            <div className="grid grid-cols-[180px_1fr]">
-              <span className="font-bold text-gray-600">In Words:</span>
+            <div className="grid grid-cols-[160px_1fr]">
+              <span className="font-bold">In words:</span>
               <span className="capitalize italic">
                 {toWords.convert(Number(data.amount))}
               </span>
             </div>
-            <div className="grid grid-cols-[180px_1fr]">
-              <span className="font-bold text-gray-600">Transaction ID:</span>
-              <span className="font-mono text-xs">{data.transactionId}</span>
+            <div className="grid grid-cols-[160px_1fr]">
+              <span className="font-bold">Mode of Payment:</span>
+              <span>{data.method?.toUpperCase()}</span>
+            </div>
+            <div className="grid grid-cols-[160px_1fr]">
+              <span className="font-bold">Transaction Ref No:</span>
+              <span>{data.transactionId || "N/A"}</span>
+            </div>
+            <div className="grid grid-cols-[160px_1fr]">
+              <span className="font-bold">Date Received:</span>
+              <span>{formattedDateTime}</span>
             </div>
           </div>
 
-          <div className="mt-auto mb-4">
-            <div className="mb-6">
-              <p className="font-bold mb-1">Authorized Signatory</p>
-
-              <div className="h-16 flex items-center justify-start mt-1 mb-1">
+          {/* Signatory Section - Pushed to bottom of Content area */}
+          <div className="mt-auto mb-2">
+            <div className="mb-6 flex items-end gap-10">
+              <div>
+                <p className="font-bold">Authorized Signatory</p>
                 <img
                   src={signatureImage}
-                  alt="Signature"
-                  className="max-h-14 w-auto object-contain" 
+                  alt="Signature of Dr Mita Tarafder"
+                  className="mt-1 h-12 w-40 object-contain object-left"
+                />
+                <p>Name: Dr Mita Tarafder</p>
+                <p>Mobile No: 9852193175</p>
+              </div>
+              <div className="flex h-28 w-36 items-center justify-center">
+                <img
+                  src={stampImage}
+                  alt="Relearn Foundation stamp"
+                  className="max-h-full max-w-full object-contain"
+                  onError={(event) => {
+                    event.currentTarget.style.display = "none";
+                  }}
                 />
               </div>
-
-              <p className="font-semibold">Dr Mita Tarafder</p>
-              <p className="text-xs text-gray-600">Mobile: +91-9852193175</p>
             </div>
             <hr className="border-t border-gray-400 mb-2" />
-            <p className="text-[10px] italic text-gray-500 text-center leading-tight">
+            <p className="text-xs italic text-gray-500 text-center">
               Donations made to Relearn Foundation (PAN-AACTR5805Q) are eligible
-              for tax deduction under Section 80G. This is a computer-generated
-              receipt and does not require a physical signature.
+              for tax deduction under section 12A/80G.
             </p>
           </div>
         </div>
 
-        <div className="w-full py-6 text-center text-[10px] text-gray-500 bg-white shrink-0">
+        {/* 3. Footer (Stick to Bottom, no overlap) */}
+        <div className="w-full py-4 text-center text-xs text-gray-600 bg-white shrink-0">
           <div className="flex items-center justify-center mb-1 gap-2 px-12">
-            <div className="h-px bg-gray-200 grow"></div>
-            <span className="font-semibold whitespace-nowrap">
-              relearn2015@gmail.com | +91-9334041104 | relf.in
+            <div className="h-px bg-gray-300 grow"></div>
+            <span className="whitespace-nowrap font-semibold">
+              relearn2015@gmail.com &nbsp; | &nbsp; +91-9334041104
             </span>
-            <div className="h-px bg-gray-200 grow"></div>
+            <div className="h-px bg-gray-300 grow"></div>
           </div>
+          <p className="mb-1">
+            2681 Vijaya Garden, Baridih, Jamshedpur - 831017 &nbsp;{" "}
+            <span className="ml-2 font-bold">Reg No: 755/160</span>
+            <span className="ml-2 font-bold">
+              NGO Darpan ID: H/2017/0115958
+            </span>
+          </p>
           <p>
-            2681 Vijaya Garden, Baridih, Jamshedpur - 831017 | Reg No: 755/160
+            Website:{" "}
+            <span className="text-blue-600 font-bold">https://relf.in/</span>
           </p>
         </div>
       </div>

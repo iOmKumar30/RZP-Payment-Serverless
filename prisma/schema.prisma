@@ -15,18 +15,18 @@ model Donation {
   email         String
   contact       String
   reason        String
-  gstno         String   @default("N/A")
+  remarks       String?  @map("remarks") @default("No remarks") // <-- Added
   method        String
   amount        Decimal  @db.Decimal(12, 2)
   date          DateTime
   receiptNumber String   @unique
   transactionId String   @unique
+  gstno         String   @default("N/A") // <-- Moved down to match
 
   @@index([date])
   @@index([email])
   @@map("donation")
 }
-
 model Counter {
   financialYear String @id
   seq           Int
