@@ -102,7 +102,7 @@ const Receipt = () => {
     <div className="bg-gray-200 min-h-screen py-10">
       <div
         id="donation-receipt-root"
-        className="bg-white text-gray-800 font-sans leading-relaxed mx-auto border border-gray-300 shadow-sm flex flex-col justify-between relative animate-slideUp"
+        className="bg-white text-gray-800 font-sans leading-relaxed mx-auto flex flex-col justify-between relative animate-slideUp"
         style={{
           width: "210mm", // Exact A4 width
           minHeight: "297mm", // At least A4, but never clip receipt content
