@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://donate.relf.in/sitemap.xml
