@@ -98,7 +98,7 @@ const Receipt = () => {
   };
 
   return (
-    <div className="bg-gray-200 min-h-screen py-10">
+    <div className="min-h-screen min-w-max bg-gray-200 py-5 sm:py-10">
       <div
         id="donation-receipt-root"
         className="bg-white text-gray-800 font-sans leading-relaxed mx-auto flex flex-col justify-between relative"

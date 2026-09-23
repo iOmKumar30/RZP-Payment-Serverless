@@ -2,9 +2,9 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 import PanPrompt from "./components/PanPrompt";
-import PaymentForm from "./components/PaymentForm";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DonationDashboard from "./pages/DonationDashboard";
+import DonationLandingPage from "./pages/DonationLandingPage";
 import ReceiptPage from "./pages/ReceiptPage";
 import SsoOk from "./pages/SsoOk"; 
 
@@ -17,11 +17,7 @@ const App = () => {
         {/* Public donation form */}
         <Route
           path="/"
-          element={
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-              <PaymentForm />
-            </div>
-          }
+          element={<DonationLandingPage />}
         />
 
         {/* Receipt */}

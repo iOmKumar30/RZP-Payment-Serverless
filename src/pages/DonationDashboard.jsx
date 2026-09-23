@@ -99,8 +99,8 @@ const DonationDashboard = () => {
 
   return (
     <div className="min-h-screen pt-6 px-4 w-full mx-auto bg-gray-300">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-center flex-grow text-gray-800">
+      <div className="mb-6 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="flex-grow text-center text-2xl font-bold text-gray-800 sm:text-3xl">
           🧾 Donation Records
         </h1>
         <button
@@ -108,7 +108,7 @@ const DonationDashboard = () => {
             localStorage.removeItem("relf_admin");
             window.location.href = "/admin/login";
           }}
-          className="ml-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          className="min-h-11 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 sm:ml-4"
         >
           Logout
         </button>

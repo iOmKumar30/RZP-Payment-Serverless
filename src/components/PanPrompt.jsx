@@ -63,8 +63,8 @@ const PanPrompt = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
-      <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md animate-slideUp">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4 py-6">
+      <div className="w-full max-w-md animate-slideUp rounded-xl bg-white p-5 shadow-xl sm:p-8">
         <h2 className="text-2xl font-bold text-center text-gray-700 mb-2">
           Tax Acknowledgment
         </h2>
@@ -83,7 +83,7 @@ const PanPrompt = () => {
               value={pan}
               onChange={(e) => setPan(e.target.value.toUpperCase())}
               placeholder="ABCDE1234F (Optional)"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
+              className="min-h-11 w-full rounded-md border border-gray-300 px-4 py-2 outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
 
@@ -97,14 +97,14 @@ const PanPrompt = () => {
               value={gstno}
               onChange={(e) => setGstno(e.target.value.toUpperCase())}
               placeholder="20AACTR5805Q2Z9 (Optional)"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
+              className="min-h-11 w-full rounded-md border border-gray-300 px-4 py-2 outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
         </div>
 
         <button
           onClick={handleSubmit}
-          className={`w-full mt-6 mb-3 py-2 rounded font-semibold transition ${
+          className={`mt-6 mb-3 min-h-11 w-full rounded py-2 font-semibold transition ${
             isLoading
               ? "bg-blue-300 cursor-not-allowed"
               : "bg-blue-600 text-white hover:bg-blue-700"
@@ -116,7 +116,7 @@ const PanPrompt = () => {
 
         <button
           onClick={handleSkip}
-          className="w-full py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+          className="min-h-11 w-full rounded bg-gray-200 py-2 text-gray-700 transition hover:bg-gray-300"
           disabled={isLoading}
         >
           Skip & Exit

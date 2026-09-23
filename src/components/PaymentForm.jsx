@@ -4,7 +4,7 @@ import { FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import logo from "../assets/relearn_logo-removebg-preview.png";
+import logo from "../assets/relearn_logo.png";
 import "../styles/PaymentForm.css";
 import { loadRazorpay } from "../utils/loadRazorpay";
 import "./PaymentForm.css"; // Custom CSS for animations
@@ -160,14 +160,14 @@ const PaymentForm = () => {
   };
 
   return (
-    <div className="animate-slideUp bg-gradient-to-br from-white via-gray-100 to-white shadow-xl rounded-2xl max-w-2xl mx-auto p-8 mt-16 border border-blue-100">
-      <div className="flex flex-col items-center mb-8">
+    <div className="animate-slideUp w-full bg-gradient-to-br from-white via-gray-100 to-white shadow-xl rounded-2xl max-w-2xl mx-auto p-4 sm:p-8 border border-emerald-100">
+      <div className="mb-6 flex flex-col items-center sm:mb-8">
         <img
           src={logo}
           alt="Relearn Logo"
-          className="w-30 h-30 mb-4 animate-fadeInScale"
+          className="mb-3 h-20 w-20 animate-fadeInScale object-contain sm:mb-4 sm:h-28 sm:w-28"
         />
-        <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-400">
+        <h2 className="text-center text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-400 sm:text-4xl">
           Make a Donation
         </h2>
         <p className="text-sm text-gray-500 mt-2 animate-fadeInScale delay-200">
@@ -175,8 +175,8 @@ const PaymentForm = () => {
         </p>{" "}
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Donor's Name
@@ -185,7 +185,7 @@ const PaymentForm = () => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 mt-1 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+              className="mt-1 min-h-11 w-full rounded-lg border px-4 py-2 shadow-sm focus:ring-2 focus:ring-emerald-500"
               placeholder="John Doe"
               required
             />
@@ -205,7 +205,7 @@ const PaymentForm = () => {
                   .slice(0, 10);
                 setContact(cleanedValue);
               }}
-              className="w-full px-4 py-2 mt-1 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+              className="mt-1 min-h-11 w-full rounded-lg border px-4 py-2 shadow-sm focus:ring-2 focus:ring-emerald-500"
               placeholder="9876543210"
               required
             />
@@ -218,7 +218,7 @@ const PaymentForm = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 mt-1 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+              className="mt-1 min-h-11 w-full rounded-lg border px-4 py-2 shadow-sm focus:ring-2 focus:ring-emerald-500"
               placeholder="john@example.com"
               required
             />
@@ -231,14 +231,14 @@ const PaymentForm = () => {
               type="text"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              className="w-full px-4 py-2 mt-1 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+              className="mt-1 min-h-11 w-full rounded-lg border px-4 py-2 shadow-sm focus:ring-2 focus:ring-emerald-500"
               placeholder="123 Street, City"
               required
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Amount (₹)
@@ -254,7 +254,7 @@ const PaymentForm = () => {
                   setAmount(value);
                 }
               }}
-              className="w-full px-4 py-2 mt-1 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+              className="mt-1 min-h-11 w-full rounded-lg border px-4 py-2 shadow-sm focus:ring-2 focus:ring-emerald-500"
               placeholder="1000.00"
               required
             />
@@ -266,7 +266,7 @@ const PaymentForm = () => {
             <select
               value={selectedMethod}
               onChange={(e) => setSelectedMethod(e.target.value)}
-              className="w-full px-4 py-2 mt-1 border rounded-md"
+              className="mt-1 min-h-11 w-full rounded-md border px-4 py-2"
             >
               <option value="" disabled hidden>
                 Select a Method
@@ -292,7 +292,7 @@ const PaymentForm = () => {
                 otherReasonRef.current?.focus();
               }, 0);
             }}
-            className="w-full px-4 py-2 mt-1 border rounded-md"
+            className="mt-1 min-h-11 w-full rounded-md border px-4 py-2"
           >
             <option value="" disabled hidden>
               Select a Purpose
@@ -312,7 +312,7 @@ const PaymentForm = () => {
               ref={otherReasonRef}
               value={otherReason}
               onChange={(e) => setOtherReason(e.target.value)}
-              className="w-full px-4 py-2 mt-1 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+              className="mt-2 min-h-11 w-full rounded-lg border px-4 py-2 shadow-sm focus:ring-2 focus:ring-emerald-500"
               placeholder="Purpose"
             />
           )}
@@ -321,7 +321,7 @@ const PaymentForm = () => {
         <button
           type="submit"
           disabled={isLoading}
-          className={`transition-all w-full py-3 rounded-lg text-white font-semibold flex items-center justify-center cursor-pointer
+          className={`min-h-12 w-full cursor-pointer rounded-lg py-3 font-semibold text-white transition-all flex items-center justify-center
       ${
         isLoading
           ? "bg-gray-400 cursor-not-allowed"

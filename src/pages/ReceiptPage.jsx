@@ -18,9 +18,9 @@ const ReceiptPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-200 pb-20">
-      <div className="pt-10 pb-6">
-        <h2 className="text-3xl font-extrabold text-slate-800 text-center flex items-center justify-center gap-3">
-          <span className="text-4xl">🧾</span> Donation Receipt
+      <div className="px-4 pt-7 pb-5 sm:pt-10 sm:pb-6">
+        <h2 className="flex items-center justify-center gap-2 text-center text-2xl font-extrabold text-slate-800 sm:gap-3 sm:text-3xl">
+          <span className="text-3xl sm:text-4xl">🧾</span> Donation Receipt
         </h2>
         <p className="text-center text-slate-500 mt-2">
           Your receipt has been generated successfully.
@@ -28,7 +28,7 @@ const ReceiptPage = () => {
       </div>
 
       {/* Container that is wide enough to hold the A4 Receipt */}
-      <div className="flex justify-center px-4">
+      <div className="overflow-x-auto px-3 pb-2 sm:px-4">
         <Receipt paymentDetails={state} />
       </div>
     </div>
