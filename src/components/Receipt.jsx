@@ -240,6 +240,11 @@ const Receipt = () => {
 
           {/* Signatory Section - Pushed to bottom of Content area */}
           <div className="mt-auto mb-2">
+            <p className="text-xs italic text-gray-500 text-center">
+              Donations made to Relearn Foundation (PAN-AACTR5805Q) are eligible
+              for tax deduction under section 12A/80G.
+            </p>
+            <br></br>
             <div className="mb-6 flex items-end gap-10">
               <div>
                 <p className="font-bold">Authorized Signatory</p>
@@ -262,11 +267,6 @@ const Receipt = () => {
                 />
               </div>
             </div>
-            <hr className="border-t border-gray-400 mb-2" />
-            <p className="text-xs italic text-gray-500 text-center">
-              Donations made to Relearn Foundation (PAN-AACTR5805Q) are eligible
-              for tax deduction under section 12A/80G.
-            </p>
           </div>
         </div>
 
@@ -283,7 +283,7 @@ const Receipt = () => {
             2681 Vijaya Garden, Baridih, Jamshedpur - 831017 &nbsp;{" "}
             <span className="ml-2 font-bold">Reg No: 755/160</span>
             <span className="ml-2 font-bold">
-              NGO Darpan ID: H/2017/0115958
+              NGO Darpan ID: JH/2017/0115958
             </span>
           </p>
           <p>
