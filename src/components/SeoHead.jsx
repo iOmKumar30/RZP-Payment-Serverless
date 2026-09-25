@@ -32,9 +32,9 @@ const setMeta = (attribute, name, content) => {
  */
 const SeoHead = () => {
   useEffect(() => {
-    const title = "Donate Relearn Foundation | Donate RELF";
+    const title = "Donate to Relearn Foundation | Support Relearn Foundation";
     const description =
-      "Donate Relearn Foundation (RELF) to help build more equitable learning opportunities. Donate RELF securely online and see how your contribution can make a difference.";
+      "Donate to Relearn Foundation (RELF) to help build more equitable learning opportunities. Donate RELF securely online and see how your contribution can make a difference.";
     const canonicalUrl = "https://donate.relf.in/";
 
     document.title = title;
@@ -42,7 +42,7 @@ const SeoHead = () => {
     setMeta(
       "name",
       "keywords",
-      "donate relearn foundation, donate relf, Relearn Foundation donation, RELF donation, support education India",
+      "donate relearn foundation, donate relf, Relearn Foundation donation, RELF donation, support education India, Support Relearn Foundation, Support Relf",
     );
     setMeta("property", "og:title", title);
     setMeta("property", "og:description", description);
