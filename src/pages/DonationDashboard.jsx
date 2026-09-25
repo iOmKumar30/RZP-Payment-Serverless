@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DonationTable from "../components/DonationTable";
 import {
-  fetchRecentDonations,
   fetchFilteredDonations,
   downloadExcel,
   downloadAllExcel,
@@ -95,6 +94,8 @@ const DonationDashboard = () => {
     }, 500);
 
     return () => clearTimeout(delayDebounce);
+  // getRecent and fetchSearch intentionally use the current filters and page.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, page, pageSize]);
 
   return (
@@ -104,7 +105,11 @@ const DonationDashboard = () => {
           🧾 Donation Records
         </h1>
         <button
-          onClick={() => {
+          onClick={async () => {
+            await fetch("/api/admin/logout", {
+              method: "POST",
+              credentials: "same-origin",
+            });
             localStorage.removeItem("relf_admin");
             window.location.href = "/admin/login";
           }}

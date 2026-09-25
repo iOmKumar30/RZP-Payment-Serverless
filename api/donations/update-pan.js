@@ -1,24 +1,22 @@
 import prisma from "../../lib/prisma.js";
+import { enforceCors, validatePanUpdate } from "../_lib/security.js";
 
 export default async function handler(req, res) {
+  if (!enforceCors(req, res, ["POST", "OPTIONS"])) return;
   if (req.method !== "POST")
     return res.status(405).json({ error: "Method not allowed" });
 
-  const { transactionId, pan, gstno } = req.body;
-
-  if (!transactionId || !pan) {
-    return res
-      .status(400)
-      .json({ error: "Transaction ID and PAN are required" });
-  }
+  const validation = validatePanUpdate(req.body);
+  if (validation.error) return res.status(400).json({ error: validation.error });
+  const { transactionId, pan, gstno } = validation.data;
 
   try {
     const updatedDonation = await prisma.donation.update({
       where: { transactionId: transactionId },
-        data: {
-            pan: pan,
-            gstno: gstno || null,
-       },
+      data: {
+        pan,
+        gstno,
+      },
     });
 
     res

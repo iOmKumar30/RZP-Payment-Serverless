@@ -1,7 +1,6 @@
 import { Prisma } from "@prisma/client";
-import crypto from "crypto";
 import prisma from "../../lib/prisma.js";
-import getFinancialYear from "../../src/utils/getFinancialYear.js";
+import { requireAdminSession } from "../_lib/security.js";
 function serializeDonation(d) {
   return {
     ...d,
@@ -13,6 +12,7 @@ function serializeDonation(d) {
 }
 
 export default async function handler(req, res) {
+  if (!requireAdminSession(req, res)) return;
   if (req.method === "GET") {
     try {
       let { from, to, skip = 0, limit = 10, search = "" } = req.query || {};

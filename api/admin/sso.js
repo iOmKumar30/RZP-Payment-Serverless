@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { createAdminSession } from "../_lib/security.js";
 
 export default async function handler(req, res) {
   try {
@@ -25,13 +26,13 @@ export default async function handler(req, res) {
     const isAllowed = roles.some((r) => allowed.has(r));
     if (!isAllowed) return res.status(403).send("Forbidden");
 
-    // Set a short-lived HTTP-only cookie (server-trusted session)
-    // If your SPA’s ProtectedRoute checks a cookie, use that; else, redirect to a route that sets localStorage.
-    // Example: use a short cookie just to pass the gate; frontend can also read a subsequent page parameter.
+    const adminSession = createAdminSession(payload);
+
+    // Only the server can verify this signed, HTTP-only admin session. The
+    // frontend localStorage flag is now just a display gate, not authorization.
     res.setHeader("Set-Cookie", [
-      // Cookie for ~5 minutes
-      `relf_admin=true; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${
-        5 * 60
+      `relf_admin_session=${encodeURIComponent(adminSession)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${
+        15 * 60
       }`,
     ]);
 

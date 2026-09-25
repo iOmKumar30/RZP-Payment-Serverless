@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -7,7 +7,14 @@ import "react-toastify/dist/ReactToastify.css";
 import logo from "../assets/relearn_logo.png";
 import "../styles/PaymentForm.css";
 import { loadRazorpay } from "../utils/loadRazorpay";
+import Turnstile from "./Turnstile";
 import "./PaymentForm.css"; // Custom CSS for animations
+
+const createIdempotencyKey = () => {
+  if (window.crypto?.randomUUID) return window.crypto.randomUUID().replaceAll("-", "");
+  return `${Date.now()}${Math.random().toString(36).slice(2, 18)}`;
+};
+
 const PaymentForm = () => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -17,12 +24,22 @@ const PaymentForm = () => {
   const [selectedMethod, setSelectedMethod] = useState("");
   const [contact, setContact] = useState("");
   const [email, setEmail] = useState("");
-  const receiptRef = useRef();
-  const [tId, settId] = useState("");
-  const [paymentDone, setPaymentDone] = useState(false);
   const [otherReason, setOtherReason] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileResetSignal, setTurnstileResetSignal] = useState(0);
   const navigate = useNavigate();
   const otherReasonRef = useRef(null);
+  const idempotencyKeyRef = useRef(createIdempotencyKey());
+  const hasCreatedOrderRef = useRef(false);
+  const handleTurnstileToken = useCallback((token) => setTurnstileToken(token), []);
+  const resetAttemptIfNeeded = () => {
+    if (!hasCreatedOrderRef.current) return;
+    hasCreatedOrderRef.current = false;
+    idempotencyKeyRef.current = createIdempotencyKey();
+    setTurnstileToken("");
+    setTurnstileResetSignal(Date.now());
+  };
+
   const handlePayment = async () => {
     const res = await loadRazorpay(
       "https://checkout.razorpay.com/v1/checkout.js",
@@ -44,14 +61,23 @@ const PaymentForm = () => {
           contact,
           address,
           reason: purpose === "Other" ? otherReason : purpose,
+          turnstileToken,
+          idempotencyKey: idempotencyKeyRef.current,
         },
-        { timeout: 60000 },
+        {
+          timeout: 60000,
+          headers: { "Idempotency-Key": idempotencyKeyRef.current },
+        },
       );
     } catch (error) {
       if (error.code === "ECONNABORTED") {
         toast.error("Request timed out. Please try again.");
       } else {
-        toast.error("Failed to initiate payment. Please try again.");
+        toast.error(error.response?.data?.error || "Failed to initiate payment. Please try again.");
+      }
+      if (error.response?.status === 403) {
+        setTurnstileToken("");
+        setTurnstileResetSignal(Date.now());
       }
       console.error("Error creating Razorpay order:", error);
       setIsLoading(false);
@@ -60,6 +86,7 @@ const PaymentForm = () => {
 
     const { amount: orderAmount, id: order_id, currency } = result.data;
     const reason = purpose === "Other" ? otherReason : purpose;
+    hasCreatedOrderRef.current = true;
 
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -81,9 +108,6 @@ const PaymentForm = () => {
           date: new Date().toISOString(),
         };
 
-        settId(response.razorpay_payment_id);
-        setPaymentDone(true);
-
         setName("");
         setAddress("");
         setAmount("");
@@ -91,6 +115,10 @@ const PaymentForm = () => {
         setSelectedMethod("");
         setContact("");
         setEmail("");
+        setTurnstileToken("");
+        setTurnstileResetSignal(Date.now());
+        idempotencyKeyRef.current = createIdempotencyKey();
+        hasCreatedOrderRef.current = false;
 
         navigate("/pancard", { state: details });
 
@@ -107,7 +135,7 @@ const PaymentForm = () => {
         address,
       },
       theme: {
-        color: "#3399cc",
+        color: "#6e8525",
       },
       method: {
         netbanking: selectedMethod === "netbanking",
@@ -144,6 +172,11 @@ const PaymentForm = () => {
 
     if (purpose === "Other" && !otherReason.trim()) {
       toast.error("Please specify your purpose in the 'Other' field.");
+      return;
+    }
+
+    if (!turnstileToken) {
+      toast.error("Please complete the security verification.");
       return;
     }
 
@@ -184,7 +217,10 @@ const PaymentForm = () => {
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                resetAttemptIfNeeded();
+                setName(e.target.value);
+              }}
               className="mt-1 min-h-11 w-full rounded-lg border px-4 py-2 shadow-sm focus:ring-2 focus:ring-emerald-500"
               placeholder="John Doe"
               required
@@ -200,6 +236,7 @@ const PaymentForm = () => {
               inputMode="numeric"
               value={contact}
               onChange={(e) => {
+                resetAttemptIfNeeded();
                 const cleanedValue = e.target.value
                   .replace(/\D/g, "")
                   .slice(0, 10);
@@ -217,7 +254,10 @@ const PaymentForm = () => {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                resetAttemptIfNeeded();
+                setEmail(e.target.value);
+              }}
               className="mt-1 min-h-11 w-full rounded-lg border px-4 py-2 shadow-sm focus:ring-2 focus:ring-emerald-500"
               placeholder="john@example.com"
               required
@@ -230,7 +270,10 @@ const PaymentForm = () => {
             <input
               type="text"
               value={address}
-              onChange={(e) => setAddress(e.target.value)}
+              onChange={(e) => {
+                resetAttemptIfNeeded();
+                setAddress(e.target.value);
+              }}
               className="mt-1 min-h-11 w-full rounded-lg border px-4 py-2 shadow-sm focus:ring-2 focus:ring-emerald-500"
               placeholder="123 Street, City"
               required
@@ -249,6 +292,7 @@ const PaymentForm = () => {
               step="0.01"
               value={amount}
               onChange={(e) => {
+                resetAttemptIfNeeded();
                 const value = e.target.value;
                 if (Number(value) >= 1 || value === "") {
                   setAmount(value);
@@ -287,6 +331,7 @@ const PaymentForm = () => {
             required
             value={purpose}
             onChange={(e) => {
+              resetAttemptIfNeeded();
               setPurpose(e.target.value);
               setTimeout(() => {
                 otherReasonRef.current?.focus();
@@ -311,11 +356,24 @@ const PaymentForm = () => {
               type="text"
               ref={otherReasonRef}
               value={otherReason}
-              onChange={(e) => setOtherReason(e.target.value)}
+              onChange={(e) => {
+                resetAttemptIfNeeded();
+                setOtherReason(e.target.value);
+              }}
               className="mt-2 min-h-11 w-full rounded-lg border px-4 py-2 shadow-sm focus:ring-2 focus:ring-emerald-500"
               placeholder="Purpose"
             />
           )}
+        </div>
+
+        <div className="rounded-xl border border-[#dce9b8] bg-[#f8fbed] p-3 sm:p-4">
+          <Turnstile
+            onTokenChange={handleTurnstileToken}
+            resetSignal={turnstileResetSignal}
+          />
+          <p className="mt-2 text-xs leading-5 text-slate-500">
+            This security check helps protect donors and prevent fraudulent payment attempts.
+          </p>
         </div>
 
         <button

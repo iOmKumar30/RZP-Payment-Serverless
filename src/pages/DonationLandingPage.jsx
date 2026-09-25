@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
+  FaArrowUp,
   FaArrowRight,
   FaBars,
   FaCheckCircle,
@@ -37,13 +38,25 @@ const impactAreas = [
 
 const DonationLandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const closeMenu = () => setIsMenuOpen(false);
 
+  useEffect(() => {
+    const updateBackToTopVisibility = () => {
+      setShowBackToTop(window.scrollY > 420);
+    };
+
+    updateBackToTopVisibility();
+    window.addEventListener("scroll", updateBackToTopVisibility, { passive: true });
+
+    return () => window.removeEventListener("scroll", updateBackToTopVisibility);
+  }, []);
+
   return (
-  <div className="min-h-screen overflow-x-hidden bg-[#f8fbed] text-slate-800">
+  <div className="min-h-screen overflow-x-hidden bg-[#f8fbed] pt-20 text-slate-800 sm:pt-24">
     <SeoHead />
 
-    <header className="relative z-50 border-b border-slate-200/80 bg-white/95 backdrop-blur">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-200/80 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4 lg:px-10">
         <a href="#top" aria-label="Relearn Foundation home" className="block">
           <img
@@ -128,7 +141,7 @@ const DonationLandingPage = () => {
               id="donation-heading"
               className="text-3xl font-black leading-[1.08] tracking-tight text-[#34500e] min-[390px]:text-4xl sm:text-5xl lg:text-6xl"
             >
-              Donate Relearn Foundation.{" "}
+              Donate to Relearn Foundation/Support Relearn Foundation.
               <span className="text-[#71892a]">Charity With Difference.</span>
             </h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-[#4d631e] sm:mt-6 sm:text-lg sm:leading-8">
@@ -230,7 +243,7 @@ const DonationLandingPage = () => {
         aria-labelledby="give-heading"
       >
         <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:gap-10 sm:px-8 lg:grid-cols-[.8fr_1.2fr] lg:items-start lg:px-10">
-          <div className="lg:sticky lg:top-8">
+          <div className="lg:sticky lg:top-28">
             <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#60751f]">
               Give securely
             </p>
@@ -609,6 +622,15 @@ const DonationLandingPage = () => {
         reserved.
       </div>
     </footer>
+    {showBackToTop && (
+      <a
+        href="#top"
+        aria-label="Back to top"
+        className="fixed bottom-5 right-4 z-40 grid h-12 w-12 place-items-center rounded-full bg-[#6e8525] text-lg text-white shadow-lg shadow-lime-950/20 transition duration-200 hover:-translate-y-1 hover:bg-[#59701a] focus:outline-none focus:ring-4 focus:ring-lime-200 sm:bottom-7 sm:right-7"
+      >
+        <FaArrowUp aria-hidden="true" />
+      </a>
+    )}
   </div>
   );
 };
