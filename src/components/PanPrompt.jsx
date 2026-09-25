@@ -3,12 +3,15 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
+const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+
 const PanPrompt = () => {
   const { state: paymentDetails } = useLocation();
   const navigate = useNavigate();
   const [pan, setPan] = useState("");
   const [gstno, setGstno] = useState(""); 
   const [isLoading, setIsLoading] = useState(false);
+  const isPanValid = PAN_REGEX.test(pan);
 
   if (!paymentDetails) {
     navigate("/");
@@ -18,13 +21,9 @@ const PanPrompt = () => {
   const handleSubmit = async () => {
     if (isLoading) return;
 
-    // Optional: Only validate PAN if something is entered
-    if (pan) {
-      const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
-      if (!panRegex.test(pan)) {
-        toast.error("Invalid PAN format. Please check again.");
-        return;
-      }
+    if (!isPanValid) {
+      toast.error("Enter a valid PAN number to generate your receipt.");
+      return;
     }
 
     setIsLoading(true);
@@ -34,7 +33,7 @@ const PanPrompt = () => {
         `${import.meta.env.VITE_API_BASE_URL}/donations/update-pan`,
         {
           transactionId: paymentDetails.transactionId,
-          pan: pan || null,
+          pan,
           gstno: gstno || "N/A", // Sending GST to backend
         },
       );
@@ -69,8 +68,11 @@ const PanPrompt = () => {
           Tax Acknowledgment
         </h2>
         <p className="text-sm text-gray-500 text-center mb-6">
-          Enter PAN for 80G benefits or GST for business receipts.
+          Enter your PAN for 80G benefits. GST is optional for business receipts.
         </p>
+        <div className="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm font-bold text-emerald-800 shadow-sm">
+          Enter PAN for instant receipt generation
+        </div>
 
         <div className="space-y-4">
           <div>
@@ -82,8 +84,9 @@ const PanPrompt = () => {
               maxLength="10"
               value={pan}
               onChange={(e) => setPan(e.target.value.toUpperCase())}
-              placeholder="ABCDE1234F (Optional)"
-              className="min-h-11 w-full rounded-md border border-gray-300 px-4 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="ABCDE1234F"
+              aria-invalid={pan.length > 0 && !isPanValid}
+              className="min-h-11 w-full rounded-md border border-gray-300 px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
 
@@ -105,11 +108,11 @@ const PanPrompt = () => {
         <button
           onClick={handleSubmit}
           className={`mt-6 mb-3 min-h-11 w-full rounded py-2 font-semibold transition ${
-            isLoading
-              ? "bg-blue-300 cursor-not-allowed"
-              : "bg-blue-600 text-white hover:bg-blue-700"
+            isLoading || !isPanValid
+              ? "cursor-not-allowed bg-gray-300 text-gray-500"
+              : "bg-emerald-600 text-white hover:bg-emerald-700"
           }`}
-          disabled={isLoading}
+          disabled={isLoading || !isPanValid}
         >
           {isLoading ? "Updating..." : "Generate Receipt"}
         </button>

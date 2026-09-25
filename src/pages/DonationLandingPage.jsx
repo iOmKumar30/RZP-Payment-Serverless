@@ -141,7 +141,7 @@ const DonationLandingPage = () => {
               id="donation-heading"
               className="text-3xl font-black leading-[1.08] tracking-tight text-[#34500e] min-[390px]:text-4xl sm:text-5xl lg:text-6xl"
             >
-              Donate to Relearn Foundation/Support Relearn Foundation.
+              Donate to Relearn Foundation.
               <span className="text-[#71892a]">Charity With Difference.</span>
             </h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-[#4d631e] sm:mt-6 sm:text-lg sm:leading-8">
