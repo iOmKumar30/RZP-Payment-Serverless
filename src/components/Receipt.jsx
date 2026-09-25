@@ -45,6 +45,10 @@ const Receipt = () => {
 
     setIsDownloading(true);
     try {
+      // Keep the exported document at its original A4 width even if the on-screen
+      // preview is currently scaled down for a phone or tablet viewport.
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+
       // scale: 3 forces a much higher resolution capture for crisp text
       const canvas = await html2canvas(element, {
         scale: 3,
@@ -98,12 +102,13 @@ const Receipt = () => {
   };
 
   return (
-    <div className="min-h-screen min-w-max bg-gray-200 py-5 sm:py-10">
+    <div className="min-h-screen w-full bg-gray-200 py-5 sm:py-10">
       <div
         id="donation-receipt-root"
-        className="bg-white text-gray-800 font-sans leading-relaxed mx-auto flex flex-col justify-between relative"
+        className="relative mx-auto flex w-full flex-col justify-between bg-white font-sans leading-relaxed text-gray-800"
         style={{
-          width: "210mm",
+          width: isDownloading ? "210mm" : "100%",
+          maxWidth: isDownloading ? "none" : "210mm",
           minHeight: "297mm",
           padding: "0",
           boxSizing: "border-box",
@@ -119,7 +124,7 @@ const Receipt = () => {
         </div>
 
         {/* 2. Main Content */}
-        <div className="px-12 flex-1 flex flex-col">
+        <div className="flex flex-1 flex-col px-4 sm:px-12">
           <div className="text-left text-sm text-black mb-4 leading-snug space-y-1">
             <h1 className="font-bold text-lg mb-1">Relearn Foundation</h1>
             <p>2681, Vijaya Gardens, Baridih, Jamshedpur, Jharkhand 831017</p>
@@ -145,7 +150,7 @@ const Receipt = () => {
 
           <hr className="my-3 border-t-2 border-black" />
 
-          <div className="flex justify-between items-center text-sm font-bold text-gray-900 mb-6 mt-2">
+          <div className="mt-2 mb-6 flex flex-col gap-2 text-sm font-bold text-gray-900 sm:flex-row sm:items-center sm:justify-between">
             <p>Receipt No: {data.receiptNumber}</p>
             <p>Date: {formattedDate}</p>
           </div>
@@ -166,48 +171,48 @@ const Receipt = () => {
           </div>
 
           <div className="text-sm space-y-2 mb-6">
-            <div className="grid grid-cols-[140px_1fr]">
+            <div className="grid grid-cols-[7rem_minmax(0,1fr)] sm:grid-cols-[140px_minmax(0,1fr)]">
               <span className="font-bold">Purpose:</span>
-              <span>{data.reason}</span>
+              <span className="min-w-0 break-words">{data.reason}</span>
             </div>
-            <div className="grid grid-cols-[140px_1fr]">
+            <div className="grid grid-cols-[7rem_minmax(0,1fr)] sm:grid-cols-[140px_minmax(0,1fr)]">
               <span className="font-bold">Remarks:</span>
-              <span>{data.remarks}</span>
+              <span className="min-w-0 break-words">{data.remarks}</span>
             </div>
-            <div className="grid grid-cols-[140px_1fr]">
+            <div className="grid grid-cols-[7rem_minmax(0,1fr)] sm:grid-cols-[140px_minmax(0,1fr)]">
               <span className="font-bold">Donor Name:</span>
-              <span>{data.name}</span>
+              <span className="min-w-0 break-words">{data.name}</span>
             </div>
-            <div className="grid grid-cols-[140px_1fr]">
+            <div className="grid grid-cols-[7rem_minmax(0,1fr)] sm:grid-cols-[140px_minmax(0,1fr)]">
               <span className="font-bold">Address:</span>
-              <span>{data.address}</span>
+              <span className="min-w-0 break-words">{data.address}</span>
             </div>
             {data.pan && (
-              <div className="grid grid-cols-[140px_1fr]">
+              <div className="grid grid-cols-[7rem_minmax(0,1fr)] sm:grid-cols-[140px_minmax(0,1fr)]">
                 <span className="font-bold">PAN No:</span>
-                <span>{data.pan}</span>
+                <span className="min-w-0 break-words">{data.pan}</span>
               </div>
             )}
             {data.gstno && data.gstno !== "N/A" && (
-              <div className="grid grid-cols-[140px_1fr]">
+              <div className="grid grid-cols-[7rem_minmax(0,1fr)] sm:grid-cols-[140px_minmax(0,1fr)]">
                 <span className="font-bold">GST No:</span>
-                <span>{data.gstno}</span>
+                <span className="min-w-0 break-words">{data.gstno}</span>
               </div>
             )}
-            <div className="grid grid-cols-[140px_1fr]">
+            <div className="grid grid-cols-[7rem_minmax(0,1fr)] sm:grid-cols-[140px_minmax(0,1fr)]">
               <span className="font-bold">Mobile No:</span>
-              <span>{data.contact}</span>
+              <span className="min-w-0 break-words">{data.contact}</span>
             </div>
-            <div className="grid grid-cols-[140px_1fr]">
+            <div className="grid grid-cols-[7rem_minmax(0,1fr)] sm:grid-cols-[140px_minmax(0,1fr)]">
               <span className="font-bold">Email:</span>
-              <span>{data.email}</span>
+              <span className="min-w-0 break-words">{data.email}</span>
             </div>
           </div>
 
           <div className="text-sm space-y-2 mb-8 bg-gray-50 p-4 rounded border border-gray-200">
-            <div className="grid grid-cols-[160px_1fr]">
+            <div className="grid grid-cols-[8rem_minmax(0,1fr)] sm:grid-cols-[160px_minmax(0,1fr)]">
               <span className="font-bold">Donation Amount:</span>
-              <span className="font-bold text-lg">
+              <span className="min-w-0 break-words text-lg font-bold">
                 {data.amount != null
                   ? Number(data.amount).toLocaleString("en-IN", {
                       style: "currency",
@@ -218,23 +223,23 @@ const Receipt = () => {
                   : "—"}
               </span>
             </div>
-            <div className="grid grid-cols-[160px_1fr]">
+            <div className="grid grid-cols-[8rem_minmax(0,1fr)] sm:grid-cols-[160px_minmax(0,1fr)]">
               <span className="font-bold">In words:</span>
-              <span className="capitalize italic">
+              <span className="min-w-0 break-words capitalize italic">
                 {toWords.convert(Number(data.amount))}
               </span>
             </div>
-            <div className="grid grid-cols-[160px_1fr]">
+            <div className="grid grid-cols-[8rem_minmax(0,1fr)] sm:grid-cols-[160px_minmax(0,1fr)]">
               <span className="font-bold">Mode of Payment:</span>
-              <span>{data.method?.toUpperCase()}</span>
+              <span className="min-w-0 break-words">{data.method?.toUpperCase()}</span>
             </div>
-            <div className="grid grid-cols-[160px_1fr]">
+            <div className="grid grid-cols-[8rem_minmax(0,1fr)] sm:grid-cols-[160px_minmax(0,1fr)]">
               <span className="font-bold">Transaction Ref No:</span>
-              <span>{data.transactionId || "N/A"}</span>
+              <span className="min-w-0 break-words">{data.transactionId || "N/A"}</span>
             </div>
-            <div className="grid grid-cols-[160px_1fr]">
+            <div className="grid grid-cols-[8rem_minmax(0,1fr)] sm:grid-cols-[160px_minmax(0,1fr)]">
               <span className="font-bold">Date Received:</span>
-              <span>{formattedDateTime}</span>
+              <span className="min-w-0 break-words">{formattedDateTime}</span>
             </div>
           </div>
 
@@ -245,7 +250,7 @@ const Receipt = () => {
               for tax deduction under section 12A/80G.
             </p>
             <br></br>
-            <div className="mb-6 flex items-end gap-10">
+            <div className="mb-6 flex flex-col gap-6 sm:flex-row sm:items-end sm:gap-10">
               <div>
                 <p className="font-bold">Authorized Signatory</p>
                 <img
@@ -272,9 +277,9 @@ const Receipt = () => {
 
         {/* 3. Footer (Stick to Bottom, no overlap) */}
         <div className="w-full py-4 text-center text-xs text-gray-600 bg-white shrink-0">
-          <div className="flex items-center justify-center mb-1 gap-2 px-12">
+          <div className="mb-1 flex items-center justify-center gap-2 px-4 sm:px-12">
             <div className="h-px bg-gray-300 grow"></div>
-            <span className="whitespace-nowrap font-semibold">
+            <span className="text-center font-semibold">
               relearn2015@gmail.com &nbsp; | &nbsp; +91-9334041104
             </span>
             <div className="h-px bg-gray-300 grow"></div>

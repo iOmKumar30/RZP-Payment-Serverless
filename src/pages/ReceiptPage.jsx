@@ -27,8 +27,8 @@ const ReceiptPage = () => {
         </p>
       </div>
 
-      {/* Container that is wide enough to hold the A4 Receipt */}
-      <div className="overflow-x-auto px-3 pb-2 sm:px-4">
+      {/* The receipt scales to the available viewport width while retaining its A4 PDF output. */}
+      <div className="mx-auto w-full px-3 pb-2 sm:px-4">
         <Receipt paymentDetails={state} />
       </div>
     </div>
