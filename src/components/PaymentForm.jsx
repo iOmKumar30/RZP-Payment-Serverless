@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useImperativeHandle, useRef, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -8,6 +8,7 @@ import logo from "../assets/relearn_logo.png";
 import "../styles/PaymentForm.css";
 import { loadRazorpay } from "../utils/loadRazorpay";
 import Turnstile from "./Turnstile";
+import { donationPurposes } from "../data/contributions";
 import "./PaymentForm.css"; // Custom CSS for animations
 
 const createIdempotencyKey = () => {
@@ -15,7 +16,7 @@ const createIdempotencyKey = () => {
   return `${Date.now()}${Math.random().toString(36).slice(2, 18)}`;
 };
 
-const PaymentForm = () => {
+const PaymentForm = ({ ref }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
@@ -39,6 +40,18 @@ const PaymentForm = () => {
     setTurnstileToken("");
     setTurnstileResetSignal(Date.now());
   };
+
+  useImperativeHandle(ref, () => ({
+    selectContribution(contribution) {
+      if (isLoading) return false;
+      resetAttemptIfNeeded();
+      const isListedPurpose = donationPurposes.includes(contribution.reason);
+      setAmount(String(contribution.amount));
+      setPurpose(isListedPurpose ? contribution.reason : "Other");
+      setOtherReason(isListedPurpose ? "" : contribution.reason);
+      return true;
+    },
+  }));
 
   const handlePayment = async () => {
     const res = await loadRazorpay(
@@ -193,7 +206,7 @@ const PaymentForm = () => {
   };
 
   return (
-    <div className="animate-slideUp w-full bg-gradient-to-br from-white via-gray-100 to-white shadow-xl rounded-2xl max-w-2xl mx-auto p-4 sm:p-8 border border-emerald-100">
+    <div id="donation-form" tabIndex={-1} aria-label="Donation form" className="animate-slideUp w-full bg-gradient-to-br from-white via-gray-100 to-white shadow-xl rounded-2xl max-w-2xl mx-auto p-4 sm:p-8 border border-emerald-100">
       <div className="mb-6 flex flex-col items-center sm:mb-8">
         <img
           src={logo}
@@ -342,13 +355,7 @@ const PaymentForm = () => {
             <option value="" disabled hidden>
               Select a Purpose
             </option>
-            <option value="Membership">Membership</option>
-            <option value="Sahaaj Pathshala">Sahaaj Pathshala</option>
-            <option value="Sahaaj Poshan">Sahaaj Poshan</option>
-            <option value="Environment">Environment</option>
-            <option value="Empowerment">Empowerment</option>
-            <option value="Education aids">Education aids</option>
-            <option value="Corpus">Corpus</option>
+            {donationPurposes.map((reason) => <option key={reason} value={reason}>{reason}</option>)}
             <option value="Other">Other</option>
           </select>
           {purpose === "Other" && (

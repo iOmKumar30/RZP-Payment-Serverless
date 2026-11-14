@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FaArrowUp,
   FaArrowRight,
@@ -14,6 +14,8 @@ import {
 } from "react-icons/fa";
 
 import PaymentForm from "../components/PaymentForm";
+import ContributionRail from "../components/ContributionRail";
+import { sponsorships } from "../data/contributions";
 import SeoHead from "../components/SeoHead";
 import communityPhoto from "../assets/relf-community-1200.jpg";
 import logo from "../assets/relearn_logo.png";
@@ -39,7 +41,15 @@ const impactAreas = [
 const DonationLandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const paymentFormRef = useRef(null);
   const closeMenu = () => setIsMenuOpen(false);
+  const selectContribution = (contribution) => {
+    if (!paymentFormRef.current?.selectContribution(contribution)) return;
+    closeMenu();
+    const form = document.getElementById("donation-form");
+    form?.focus({ preventScroll: true });
+    form?.scrollIntoView({ block: "start", behavior: "auto" });
+  };
 
   useEffect(() => {
     const updateBackToTopVisibility = () => {
@@ -73,11 +83,11 @@ const DonationLandingPage = () => {
             <a href="#impact" className="transition hover:text-[#59701a]">
               Our work
             </a>
-            <a href="#sponsorship" className="transition hover:text-[#59701a]">
-              Sponsorship
-            </a>
             <a href="#membership" className="transition hover:text-[#59701a]">
               Membership
+            </a>
+            <a href="#sponsorship" className="transition hover:text-[#59701a]">
+              Sponsorship
             </a>
             <a href="#csr" className="transition hover:text-[#59701a]">
               CSR
@@ -118,14 +128,15 @@ const DonationLandingPage = () => {
       >
         <a href="#impact" onClick={closeMenu} className="rounded-xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-[#f1f7df] hover:text-[#59701a]">Our work</a>
         <a href="#donate" onClick={closeMenu} className="rounded-xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-[#f1f7df] hover:text-[#59701a]">Donate</a>
-        <a href="#sponsorship" onClick={closeMenu} className="rounded-xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-[#f1f7df] hover:text-[#59701a]">Sponsorship</a>
         <a href="#membership" onClick={closeMenu} className="rounded-xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-[#f1f7df] hover:text-[#59701a]">Membership</a>
+        <a href="#sponsorship" onClick={closeMenu} className="rounded-xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-[#f1f7df] hover:text-[#59701a]">Sponsorship</a>
         <a href="#csr" onClick={closeMenu} className="rounded-xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-[#f1f7df] hover:text-[#59701a]">CSR</a>
         <a href="https://relf.in" target="_blank" rel="noopener noreferrer" className="mt-2 rounded-xl bg-[#f1f7df] px-4 py-3 text-sm font-bold text-[#59701a] transition hover:bg-[#e3efc3]">Visit main website</a>
       </nav>
     </header>
 
     <main id="top">
+      <ContributionRail onSelect={selectContribution} />
       <section
         className="relative isolate overflow-hidden bg-[#eaf4cf]"
         aria-labelledby="donation-heading"
@@ -303,7 +314,7 @@ const DonationLandingPage = () => {
             </ul>
           </div>
           <div className="rounded-2xl border border-[#dce9b8] bg-white p-1 shadow-xl shadow-lime-950/5 sm:rounded-3xl sm:p-4">
-            <PaymentForm />
+            <PaymentForm ref={paymentFormRef} />
           </div>
         </div>
       </section>
@@ -419,21 +430,7 @@ const DonationLandingPage = () => {
           </p>
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            ["One Sahaaj Pathshala student", "₹3,000", "per year"],
-            ["One Sahaaj Pathshala tutor", "₹30,000", "per year"],
-            ["One Sahaaj Pathshala", "₹45,000", "per year"],
-            ["Training of tutors", "₹3,000", "per tutor for 50 sessions"],
-            ["One-day feast", "₹50,000", "for 1,000 students and teachers"],
-            ["Chola-Gur for one Pathshala", "₹15,000", "per year"],
-            ["Environment awareness camp", "₹15,000", "for two days"],
-            ["Online STEM training", "₹5,000", "per day for college students"],
-            [
-              "Entrepreneurship & management training",
-              "₹5,000",
-              "for a three-hour online session",
-            ],
-          ].map(([title, amount, detail]) => (
+          {sponsorships.map(({ title, amount, detail }) => (
             <article
               key={title}
               className="rounded-2xl border border-[#dce9b8] bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md sm:p-6"
@@ -442,7 +439,7 @@ const DonationLandingPage = () => {
                 {title}
               </p>
               <p className="mt-5 text-3xl font-black text-[#59701a]">
-                {amount}
+                ₹{amount.toLocaleString("en-IN")}
               </p>
               <p className="mt-1 text-sm leading-5 text-slate-500">{detail}</p>
             </article>
